@@ -10,11 +10,14 @@ get '/' => sub {
     template 'index';
 };
 
-post '/upload/**' => sub {
+post '/upload/**/*' => sub {
     ## this will use the filename POST'ed
-    my ($path) = splat;
+    my ($path, $name) = splat;
+    warning $name;
     my $file = upload('filename');
-    $file->copy_to(File::Spec->catfile(setting('public'), @$path, $file->basename));
+    my $target = File::Spec->catfile(setting('public'), 'gallery', @$path);
+    make_path($target);
+    $file->copy_to(File::Spec->catfile($target, $name));
 };
 
 true;
