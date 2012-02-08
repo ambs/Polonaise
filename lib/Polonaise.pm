@@ -11,13 +11,12 @@ get '/' => sub {
 };
 
 post '/upload/**/*' => sub {
-    ## this will use the filename POST'ed
     my ($path, $name) = splat;
-    warning $name;
     my $file = upload('filename');
-    my $target = File::Spec->catfile(setting('public'), 'gallery', @$path);
-    make_path($target);
-    $file->copy_to(File::Spec->catfile($target, $name));
+    my $folder = File::Spec->catfile(setting('public'), 'gallery', @$path);
+    make_path($folder) unless -d $folder;
+    $file->copy_to(File::Spec->catfile($folder, $name));
+    return "OK";
 };
 
 true;
