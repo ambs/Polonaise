@@ -21,12 +21,7 @@ post '/upload/**/*' => sub {
 };
 
 get '/gallery' => sub {
-    chdir(setting('public') . '/gallery');
-
-    my $galleries;
-    foreach (<*>) {
-       $galleries->{$_} = [<$_/*>];
-    }
+    my $galleries = __list_galleries();
 
     template 'gallery/index', { galleries => $galleries};
 };
@@ -43,5 +38,24 @@ get '/gallery/:gallery/:name' => sub {
 
     template 'gallery/view', { photos => $photos, name => "$gallery/$name" };
 };
+
+get '/service/:op' => sub {
+    my $op = params->{op};
+
+    my $data;
+    $data = __list_galleries() if $op eq 'list_galleries';
+
+    content_type 'application/json';
+    return to_xml $data;
+};
+
+sub __list_galleries {
+    chdir(setting('public') . '/gallery');
+    my $galleries;
+    foreach (<*>) {
+       $galleries->{$_} = [<$_/*>];
+    }
+    return $galleries;
+}
 
 true;
