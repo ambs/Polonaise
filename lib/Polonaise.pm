@@ -3,6 +3,7 @@ use Dancer ':syntax';
 
 use File::Path 'make_path';
 use File::Spec;
+use Data::Dumper;
 
 our $VERSION = '0.1';
 
@@ -27,7 +28,21 @@ get '/gallery' => sub {
        $galleries->{$_} = [<$_/*>];
     }
 
-    template 'gallery', { galleries => $galleries};
+    template 'gallery/index', { galleries => $galleries};
+};
+
+get '/gallery/:gallery/:name' => sub {
+    my $gallery = params->{gallery};
+    my $name = params->{name};
+    chdir(setting('public') . "/gallery/$gallery/$name");
+
+    my $photos;
+    foreach (<*>) {
+        $photos->{$_} = "/gallery/$gallery/$name/$_"; # XXX create thumb
+    }
+print STDERR Dumper($photos);
+
+    template 'gallery/view', { photos => $photos };
 };
 
 true;

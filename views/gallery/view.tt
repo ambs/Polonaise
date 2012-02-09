@@ -1,0 +1,7 @@
+<ul>
+[% FOREACH k IN photos.keys%]
+    <li>[% k %]<br>
+        <img height="50px" src="[% photos.$k %]">
+    </li>
+[% END %]
+</ul>
