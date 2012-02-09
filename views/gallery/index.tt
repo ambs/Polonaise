@@ -11,7 +11,9 @@
 [% IF photos.size %]
 <h2>Photos</h2>
 [% FOREACH photo IN photos %]
+  <a href="/gallery/[% current %]/[% photo %]">
     <img width="150" src="/gallery/[% current %]/[% photo %]"/>
+  </a>
 [% END %]
 </ul>
 [% END %]
