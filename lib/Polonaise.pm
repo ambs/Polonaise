@@ -40,9 +40,8 @@ get '/gallery/:gallery/:name' => sub {
     foreach (<*>) {
         $photos->{$_} = "/gallery/$gallery/$name/$_"; # XXX create thumb
     }
-print STDERR Dumper($photos);
 
-    template 'gallery/view', { photos => $photos };
+    template 'gallery/view', { photos => $photos, name => "$gallery/$name" };
 };
 
 true;
