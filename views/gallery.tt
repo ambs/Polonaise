@@ -1,0 +1,11 @@
+<h3>Photo Gallery Index</h3>
+<ul>
+[% FOREACH k IN galleries.keys %]
+    <li><a href="">[% k %]</a></li>
+    <ul>
+    [% FOREACH sub IN galleries.$k %]
+        <li><a href="">[% sub.replace(".*?\/","") %]</a></li>
+    [% END %]
+    </ul>
+[% END %]
+</ul>

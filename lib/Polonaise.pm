@@ -19,4 +19,15 @@ post '/upload/**/*' => sub {
     return "OK";
 };
 
+get '/gallery' => sub {
+    chdir(setting('public') . '/gallery');
+
+    my $galleries;
+    foreach (<*>) {
+       $galleries->{$_} = [<$_/*>];
+    }
+
+    template 'gallery', { galleries => $galleries};
+};
+
 true;
