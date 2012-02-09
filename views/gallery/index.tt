@@ -1,11 +1,18 @@
 <h3>Photo Gallery Index</h3>
+[% IF galleries %]
+<h2>Galleries</h2>
 <ul>
-[% FOREACH k IN galleries.keys %]
-    <li>[% k %]</li>
-    <ul>
-    [% FOREACH sub IN galleries.$k %]
-        <li><a href="/gallery/[% sub %]">[% sub.replace(".*?\/","") %]</a></li>
-    [% END %]
-    </ul>
+[% FOREACH gal IN galleries %]
+    <li><a href="[% current %]/[% gal %]">[% gal %]</li>
 [% END %]
 </ul>
+[% END %]
+
+[% IF photos %]
+<h2>Photos</h2>
+[% FOREACH photo IN photos %]
+    <img src="[% current %]/[% photo %]"/>
+[% END %]
+</ul>
+[% END %]
+

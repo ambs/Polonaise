@@ -2,7 +2,7 @@ package Polonaise;
 use Dancer ':syntax';
 
 use File::Path 'make_path';
-use File::Spec;
+use File::Spec::Functions 'catfile';
 use Data::Dumper;
 
 our $VERSION = '0.1';
@@ -14,16 +14,29 @@ get '/' => sub {
 post '/upload/**/*' => sub {
     my ($path, $name) = splat;
     my $file = upload('filename');
-    my $folder = File::Spec->catfile(setting('public'), 'gallery', @$path);
+    my $folder = catfile(setting('public'), 'gallery', @$path);
     make_path($folder) unless -d $folder;
-    $file->copy_to(File::Spec->catfile($folder, $name));
+    $file->copy_to(catfile($folder, $name));
     return "OK";
 };
 
-get '/gallery' => sub {
-    my $galleries = __list_galleries();
+get '/gallery/**' => {
+   my ($path) = splat;
+   $path = catfile(setting('public'), 'gallery', @$path);
+   chdir $path;
+   my @galleries;
+   my @photos;
+   for my $file (glob("*")) {
+     if (-d $file) {
+         push @galleries, $file
+      } else {
+         push @photos, $file
+      }
+   }
 
-    template 'gallery/index', { galleries => $galleries};
+   template 'gallery', { galleries => \@galleries,
+                         current => $path,
+                         photos => \@photos};
 };
 
 get '/gallery/:gallery/:name' => sub {
