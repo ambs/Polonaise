@@ -1,17 +1,17 @@
 <h3>Photo Gallery Index</h3>
-[% IF galleries %]
+[% IF galleries.size %]
 <h2>Galleries</h2>
 <ul>
 [% FOREACH gal IN galleries %]
-    <li><a href="[% current %]/[% gal %]">[% gal %]</li>
+    <li><a href="/gallery/[% current %]/[% gal %]">[% gal %]</a></li>
 [% END %]
 </ul>
 [% END %]
 
-[% IF photos %]
+[% IF photos.size %]
 <h2>Photos</h2>
 [% FOREACH photo IN photos %]
-    <img src="[% current %]/[% photo %]"/>
+    <img width="150" src="/gallery/[% current %]/[% photo %]"/>
 [% END %]
 </ul>
 [% END %]

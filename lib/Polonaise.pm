@@ -8,7 +8,7 @@ use Data::Dumper;
 our $VERSION = '0.1';
 
 get '/' => sub {
-    template 'index';
+    redirect '/gallery/'
 };
 
 post '/upload/**/*' => sub {
@@ -20,23 +20,21 @@ post '/upload/**/*' => sub {
     return "OK";
 };
 
-get '/gallery/**' => {
-   my ($path) = splat;
-   $path = catfile(setting('public'), 'gallery', @$path);
-   chdir $path;
-   my @galleries;
-   my @photos;
-   for my $file (glob("*")) {
-     if (-d $file) {
-         push @galleries, $file
-      } else {
-         push @photos, $file
-      }
-   }
-
-   template 'gallery', { galleries => \@galleries,
-                         current => $path,
-                         photos => \@photos};
+get qr{/gallery/(.*)} => sub {
+    my ($path) = splat;
+    my $systempath = catfile(setting('public'), 'gallery', $path);
+    chdir $systempath;
+    my (@galleries, @photos);
+    for my $file (glob("*")) {
+        if (-d $file) {
+            push @galleries, $file
+        } else {
+            push @photos, $file
+        }
+    }
+    template 'gallery/index', { current => $path,
+                                galleries => \@galleries,
+                                photos => \@photos };
 };
 
 get '/gallery/:gallery/:name' => sub {
