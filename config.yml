@@ -29,5 +29,5 @@ engines:
 
 plugins:
   Database:
-    driver: 'sqlite'
+    driver: 'SQLite'
     database: 'db/comments.sqlite'

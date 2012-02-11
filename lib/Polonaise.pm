@@ -4,6 +4,7 @@ use Dancer ':syntax';
 use File::Path 'make_path';
 use File::Spec::Functions 'catfile';
 use Data::Dumper;
+use Dancer::Plugin::Database;
 
 our $VERSION = '0.1';
 
@@ -48,6 +49,19 @@ get '/gallery/:gallery/:name' => sub {
     }
 
     template 'gallery/view', { photos => $photos, name => "$gallery/$name" };
+};
+
+any ['get','post'] => '/view/**/*' => sub {
+    my ($path,$name) = splat;
+    my $fullpath = catfile('/gallery', @$path, $name);
+    my $new = params->{comment};
+
+    if ($new) {
+        database->quick_insert('comments', {path=>$fullpath,comment=>$new});
+    }
+    my $comments = [database->quick_select('comments', { path=>$fullpath }, {order_by => 'timestamp'})];
+
+    template 'gallery/image', { comments=>$comments, name=>$name, fullpath=>$fullpath};
 };
 
 get '/service/:op' => sub {
