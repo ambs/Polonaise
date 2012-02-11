@@ -53,7 +53,7 @@ get '/gallery/:gallery/:name' => sub {
 
 any ['get','post'] => '/view/**/*' => sub {
     my ($path, $pic) = splat;
-    my $fullpath = catfile('/gallery', @$path, $name);
+    my $fullpath = catfile('/gallery', @$path, $pic);
 
     if (param('comment')) {
         database->quick_insert('comments',
