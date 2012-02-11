@@ -1,6 +1,7 @@
 package Polonaise;
 use Dancer ':syntax';
 
+use Image::EXIF;
 use File::Path 'make_path';
 use File::Spec::Functions 'catfile';
 use Data::Dumper;
@@ -38,19 +39,6 @@ get qr{/gallery/(.*)} => sub {
                                 photos => \@photos };
 };
 
-get '/gallery/:gallery/:name' => sub {
-    my $gallery = params->{gallery};
-    my $name = params->{name};
-    chdir(setting('public') . "/gallery/$gallery/$name");
-
-    my $photos;
-    foreach (<*>) {
-        $photos->{$_} = "/gallery/$gallery/$name/$_"; # XXX create thumb
-    }
-
-    template 'gallery/view', { photos => $photos, name => "$gallery/$name" };
-};
-
 any ['get','post'] => '/view/**/*' => sub {
     my ($path, $pic) = splat;
     my $fullpath = catfile('/gallery', @$path, $pic);
@@ -70,23 +58,18 @@ any ['get','post'] => '/view/**/*' => sub {
                                 fullpath => $fullpath};
 };
 
-get '/service/:op' => sub {
-    my $op = params->{op};
+get '/get/:type/**' => sub {
+    my $op = param('op');
+    my ($image) = splat;
+
+    my $exif = Image::EXIF->new(catfile('/gallery',@$image));
 
     my $data;
-    $data = __list_galleries() if $op eq 'list_galleries';
+    $data = $exif->get_image_info()  if $op eq 'size';
+    $data = $exit->get_camera_info() if $op eq 'camera';
 
-    content_type 'application/json';
+    content_type 'application/xml';
     return to_xml $data;
 };
-
-sub __list_galleries {
-    chdir(setting('public') . '/gallery');
-    my $galleries;
-    foreach (<*>) {
-       $galleries->{$_} = [<$_/*>];
-    }
-    return $galleries;
-}
 
 true;
