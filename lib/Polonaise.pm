@@ -1,7 +1,6 @@
 package Polonaise;
 use Dancer ':syntax';
 
-use Image::EXIF;
 use File::Path 'make_path';
 use File::Spec::Functions 'catfile';
 use Data::Dumper;
@@ -56,20 +55,6 @@ any ['get','post'] => '/view/**/*' => sub {
     template 'gallery/image', { comments => \@comments,
                                 name => $pic,
                                 fullpath => $fullpath};
-};
-
-get '/get/:type/**' => sub {
-    my $op = param('op');
-    my ($image) = splat;
-
-    my $exif = Image::EXIF->new(catfile('/gallery',@$image));
-
-    my $data;
-    $data = $exif->get_image_info()  if $op eq 'size';
-    $data = $exit->get_camera_info() if $op eq 'camera';
-
-    content_type 'application/xml';
-    return to_xml $data;
 };
 
 true;
