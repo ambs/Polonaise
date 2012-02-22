@@ -33,7 +33,7 @@ get qr{/gallery/(.*)} => sub {
             push @photos, $file
         }
     }
-    template 'gallery/index', { current => $path,
+    template 'gallery', { current => $path,
                                 galleries => \@galleries,
                                 photos => \@photos };
 };
@@ -52,9 +52,9 @@ any ['get','post'] => '/view/**/*' => sub {
                                           { path => $fullpath },
                                           { order_by => 'timestamp'});
 
-    template 'gallery/image', { comments => \@comments,
-                                name => $pic,
-                                fullpath => $fullpath};
+    template 'image', { comments => \@comments,
+                        name => $pic,
+                        fullpath => $fullpath};
 };
 
 true;
