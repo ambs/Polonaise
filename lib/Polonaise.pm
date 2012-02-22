@@ -34,8 +34,8 @@ get qr{/gallery/(.*)} => sub {
         }
     }
     template 'gallery', { current => $path,
-                                galleries => \@galleries,
-                                photos => \@photos };
+                          galleries => \@galleries,
+                          photos => \@photos };
 };
 
 any ['get','post'] => '/view/**/*' => sub {
